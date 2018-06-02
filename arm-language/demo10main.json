@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "IPaddresses": {
+            "type": "object",
+            "metadata": {
+                "description": "Array of environments and IP addresses"
+            }
+        }
+    },
+    "variables": {
+        "vnet": "myNet",
+        "vnetPrefix": "10.0.0.0/16",
+        "subnetPrefix": "10.0.0.0/24"
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-01-01",
+            "name": "mynetwork",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri" : "https://raw.githubusercontent.com/tkubica12/armtutorial/master/demo10shared.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vnet": {
+                        "value": "[variables('vnet')]"
+                    },
+                    "vnetPrefix": {
+                        "value": "[variables('vnetPrefix')]"
+                    },
+                    "subnetPrefix": {
+                        "value": "[variables('subnetPrefix')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-01-01",
+            "name": "[concat('ip',copyIndex(1))]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                    "Microsoft.Resources/deployments/mynetwork"
+            ],
+            "copy": {
+                "name": "environments",
+                "count": "[length(parameters('IPaddresses').myIPs)]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri" : "https://raw.githubusercontent.com/tkubica12/armtutorial/master/demo10ip.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vnet": {
+                        "value": "[variables('vnet')]"
+                    },
+                    "vnetPrefix": {
+                        "value": "[variables('vnetPrefix')]"
+                    },
+                    "subnetPrefix": {
+                        "value": "[variables('subnetPrefix')]"
+                    },
+                    "names": {
+                        "value": "[parameters('IPaddresses').myIPs[copyIndex()].names]"
+                    },
+                    "environment": {
+                        "value": "[parameters('IPaddresses').myIPs[copyIndex()].environment]"
+                    }                   
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

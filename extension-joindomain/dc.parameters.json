@@ -1,0 +1,42 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "tomas"
+    },
+    "adminPassword": {
+      "value": "Azure12345678"
+    },
+    "vnetName": {
+      "value": "joindomain-net"
+    },
+    "vnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "subnetName": {
+      "value": "joindomain-sub"
+    },
+    "subnetAddressPrefix": {
+      "value": "10.0.0.0/24"
+    },
+    "dcNamePrefix": {
+      "value": "dc"
+    },
+    "dcVmSize": {
+      "value": "Standard_B2s"
+    },
+    "dcIp": {
+      "value": "10.0.0.100"
+    },
+    "domainName": {
+      "value": "mydomain.demo"
+    },
+    "modulesUrl": {
+        "value": "https://mujextensionstordomain.blob.core.windows.net/windows-powershell-dsc/setupAD.ps1.zip"
+    },
+    "configurationFunction": {
+        "value": "setupAD.ps1\\setupAD"
+    }
+  }
+}

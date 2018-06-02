@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "name": {
+          "type": "string",
+          "metadata": {
+              "description": "IP address name"
+          }
+      },
+      "environment": {
+          "type": "string",
+          "defaultValue": "PROD",
+          "allowedValues": [
+              "PROD", "QA", "TEST", "DEV"
+          ],
+          "metadata": {
+              "description": "Environment in which IP address will be used"
+          }
+      },
+      "count": {
+          "type": "int",
+          "defaultValue": 1,
+          "metadata": {
+              "description": "Number of IP addresses"
+          }
+      }
+   },
+  "variables": {
+      "whereVariable": "[resourceGroup().location]"
+   },
+  "resources": 
+  [
+            {
+                "type": "Microsoft.Network/publicIPAddresses",
+                "copy": {
+                    "name": "multipleIPs",
+                    "count": "[parameters('count')]"
+                },
+                "name": "[concat(parameters('name'),'-',parameters('environment'),'-',copyIndex(1))]",
+                "apiVersion": "2016-03-30",
+                "location": "[variables('whereVariable')]",
+                "properties": {
+                    "publicIPAllocationMethod": "Dynamic"
+                }
+            }
+   ],
+  "outputs": { }
+}

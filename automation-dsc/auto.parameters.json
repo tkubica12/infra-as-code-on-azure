@@ -1,0 +1,15 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "tomas"
+    },
+    "adminPassword": {
+      "value": "Azure12345678"
+    },
+    "automationAccountName": {
+      "value": "muj-automation"
+    }
+  }
+}

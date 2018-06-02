@@ -1,0 +1,36 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "localtomas"
+    },
+    "adminPassword": {
+      "value": "Azure12345678"
+    },
+    "domainAdminUsername": {
+      "value": "tomas"
+    },
+    "domainAdminPassword": {
+      "value": "Azure12345678"
+    },
+    "vnetName": {
+      "value": "joindomain-net"
+    },
+    "subnetName": {
+      "value": "joindomain-sub"
+    },
+    "vmNamePrefix": {
+      "value": "joinedvm"
+    },
+    "VmSize": {
+      "value": "Standard_B2s"
+    },
+    "dcIp": {
+      "value": "10.0.0.100"
+    },
+    "domainName": {
+      "value": "mydomain.demo"
+    }
+  }
+}

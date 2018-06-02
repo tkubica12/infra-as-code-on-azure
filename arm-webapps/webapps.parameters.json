@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "servicePlanName": {
+            "value": "tomasplan"
+        },
+        "dbServer": {
+            "value": "tomassqlserver"
+        },
+        "dbAdminLogin": {
+            "value": "tomas"
+        },
+        "dbAdminPassword": {
+            "value": "Azure12345678"
+        },
+        "dbPoolName": {
+            "value": "mypool"
+        },
+        "dbPoolDtu": {
+            "value": 50
+        },
+        "dbEdition": {
+            "value": "Basic"
+        },
+        "dbMinDtu": {
+            "value": 0
+        },
+        "dbMaxDtu": {
+            "value": 5
+        },
+        "pfxBlob": {
+            "value": "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"
+        },
+        "pfxPassword": {
+            "value": "Azure12345678"
+        },
+        "domain": {
+            "value": "azure.tomaskubica.cz"
+        },
+        "dnsResourceGroup": {
+            "value": "shared-services"
+        },
+        "certificateName": {
+            "value": "azure-tomaskubica-cz"
+        },
+        "sitesObject": {
+            "value": {
+                "sites": [
+                    {
+                        "siteName": "tomasappka01",
+                        "dbName": "tomasappdbka01",
+                        "dbCollation": "CZECH_CI_AS"
+                    },
+                    {
+                        "siteName": "tomasappka02",
+                        "dbName": "tomasappdbka02",
+                        "dbCollation": "CZECH_CI_AS"
+                    },
+                    {
+                        "siteName": "tomasappka03",
+                        "dbName": "tomasappdbka03",
+                        "dbCollation": "CZECH_CI_AS"
+                    },
+                    {
+                        "siteName": "tomasappka04",
+                        "dbName": "tomasappdbka04",
+                        "dbCollation": "CZECH_CI_AS"
+                    },
+                    {
+                        "siteName": "tomasappka05",
+                        "dbName": "tomasappdbka05",
+                        "dbCollation": "CZECH_CI_AS"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "names": {
+            "type": "array"
+        },
+        "environment": {
+            "type": "string"
+        },
+        "vnet": {
+            "type": "string"
+        },
+        "vnetPrefix": {
+            "type": "string"
+        },
+        "subnetPrefix": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "whereVariable": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "copy": {
+                "name": "multipleIPs",
+                "count": "[length(parameters('names'))]"
+            },
+            "name": "[concat(parameters('names')[copyIndex()],'-',parameters('environment'))]",
+            "apiVersion": "2016-03-30",
+            "location": "[variables('whereVariable')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "copy": {
+                "name": "multipleNICs",
+                "count": "[length(parameters('names'))]"
+            },
+            "name": "[concat(parameters('names')[copyIndex()],'-',parameters('environment'),'-NIC')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "multipleIPs"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses/', concat(parameters('names')[copyIndex()],'-',parameters('environment')))]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', parameters('vnet')),'/subnets/',parameters('vnet'),'Sub')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {}
+}
