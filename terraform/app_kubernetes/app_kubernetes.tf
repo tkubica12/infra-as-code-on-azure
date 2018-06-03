@@ -33,15 +33,6 @@ resource "azurerm_resource_group" "app" {
   location = "West Europe"
 }
 
-# Storage account for registry
-resource "azurerm_storage_account" "app" {
-  name                     = "storage${random_id.storage.hex}"
-  resource_group_name      = "${azurerm_resource_group.app.name}"
-  location                 = "${azurerm_resource_group.app.location}"
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
 # Azure Container Registry
 resource "azurerm_container_registry" "app" {
   name                = "contreg${random_id.registry.hex}"
@@ -49,7 +40,6 @@ resource "azurerm_container_registry" "app" {
   location            = "${azurerm_resource_group.app.location}"
   admin_enabled       = true
   sku                 = "Basic"
-  storage_account_id  = "${azurerm_storage_account.app.id}"
 }
 
 # Kubernetes cluster
