@@ -9,3 +9,15 @@ sudo mv ./terraform /usr/bin
 
 terraform get
 terraform init
+
+# Show Terraform deployment plan
+
+terraform plan
+
+# Deploy environment
+
+terraform apply
+
+# Destroy environment
+
+terraform destroy
