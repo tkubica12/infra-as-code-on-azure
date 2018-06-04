@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "ipName": "mojeip3",
+        "deterministicId": "[uniqueString(resourceGroup().id)]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[concat(variables('ipName'),'-',variables('deterministicId'))]",
+            "apiVersion": "2016-03-30",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        }
+    ],
+    "outputs": {}
+}

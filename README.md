@@ -54,6 +54,13 @@ In this demo we are going to publish ARM template to service catalog (internal t
 
 TBD
 
+# Reading Azure metadata from VM and reacting on it in your code
+
+TBD
+
+# Managed Service Identity
+
+TBD
 
 
 
