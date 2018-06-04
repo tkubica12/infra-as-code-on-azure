@@ -1,0 +1,31 @@
+- name: Ensure Linux servers are provisioned and Apache or Nginx installed
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+    group: "ansible-rg"
+    vms:
+      - name: mujApache
+        tag: apache
+      - name: mujNGINX
+        tag: nginx
+  tasks:
+  - name: Ensure infrastructure and VMs are provisioned
+    include: web-servers.yaml
+
+- name: Make sure Apache is installed
+  hosts: apache
+  gather_facts: no
+  remote_user: tomas
+  become: true
+  roles:
+    - geerlingguy.apache
+
+- name: Make sure nginx is installed
+  hosts: nginx
+  gather_facts: no
+  remote_user: tomas
+  become: true
+  roles:
+    - geerlingguy.nginx
+

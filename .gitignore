@@ -3,3 +3,4 @@ terraform/terraform.tfvars*
 terraform/.terraform
 terraform/.terraform*
 managedapp/app.zip
+ansible/azurecredentials.rc

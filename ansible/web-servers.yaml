@@ -1,0 +1,22 @@
+- name: Ensure resource group exists
+  azure_rm_resourcegroup:
+      name: "{{ group }}"
+      location: westeurope
+
+- name: Ensure virtual network exists
+  azure_rm_virtualnetwork:
+    resource_group: "{{ group }}"
+    name: mynet
+    address_prefixes: "10.10.0.0/16"
+
+- name: Ensure subnet exists
+  azure_rm_subnet:
+    name: mysub
+    virtual_network_name: mynet
+    resource_group: "{{ group }}"
+    address_prefix_cidr: "10.10.1.0/24"
+
+- name: Ensure Linux VMs exists
+  include: type-web-server.yaml
+  with_items: "{{ vms }}"
+

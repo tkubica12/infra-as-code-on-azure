@@ -8,7 +8,13 @@ Each example contains deploy.ps1 or deploy.sh with instructions how to deploy th
 
 This demonstrates some basic ARM syntax principles described here:
 
-TBD
+* Template structure with parameters and variables
+* Output from template
+* Creating unique strings
+* Looping
+* JSON object as parameter input
+* Nested template to deploy to different resource group
+* Linked nested template as building block
 
 # Multiple Web Apps with Azure SQL in SaaS scenario (arm-webapps)
 
@@ -38,7 +44,7 @@ First we will deploy Azure Automation account with ARM template and prepare it f
 
 In this demo you will se usage of standard cloud-init to configure Linux system after first start. In our case we will register new repositories, install various packages and run script to do configurations. Purpose of this demo is to automatically create workstation (jump-server) to operate Kubernetes such as AKS (installs GUI, remote desktop, kubectl, Helm, Docker, VS Code with various plugins). Follow instructions in deploy.sh.
 
-# Deploy infrastructure and configure Linux VMs with Ansible roles
+# Deploy infrastructure and configure Linux VMs with Ansible roles (ansible)
 
 TBD
 

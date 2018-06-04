@@ -1,0 +1,36 @@
+  - name: Make sure VM of type web server exist
+    azure_rm_virtualmachine:
+      resource_group: "{{ group }}"
+      name: "{{ item.name }}"
+      vm_size: Standard_B1s
+      admin_username: tomas
+      ssh_password_enabled: false
+      ssh_public_keys: 
+        - path: /home/tomas/.ssh/authorized_keys
+          key_data: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFhm1FUhzt/9roX7SmT/dI+vkpyQVZp3Oo5HC23YkUVtpmTdHje5oBV0LMLBB1Q5oSNMCWiJpdfD4VxURC31yet4mQxX2DFYz8oEUh0Vpv+9YWwkEhyDy4AVmVKVoISo5rAsl3JLbcOkSqSO8FaEfO5KIIeJXB6yGI3UQOoL1owMR9STEnI2TGPZzvk/BdRE73gJxqqY0joyPSWOMAQ75Xr9ddWHul+v//hKjibFuQF9AFzaEwNbW5HxDsQj8gvdG/5d6mt66SfaY+UWkKldM4vRiZ1w11WlyxRJn5yZNTeOxIYU4WLrDtvlBklCMgB7oF0QfiqahauOEo6m5Di2Ex"
+      os_type: Linux
+      image:
+        offer: UbuntuServer
+        publisher: Canonical
+        sku: "16.04-LTS"
+        version: latest
+      open_ports:
+        - 22
+        - 80
+      tags:
+        ansiblegroup: "{{ item.tag }}"
+    register: mojelinuxvm
+
+  - name: Print IP
+    debug: msg="Access your Linux VM {{ item.name }} at {{ mojelinuxvm.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
+
+  - name: Ensure server is in inventory
+    add_host:
+      hostname: "{{ mojelinuxvm.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
+      group: "{{ item.tag }}"
+      
+  - name: Wait for SSH to become available
+    wait_for:
+      port: 22
+      host: "{{ mojelinuxvm.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
+    delegate_to: localhost
