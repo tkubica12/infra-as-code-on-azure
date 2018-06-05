@@ -5,3 +5,4 @@ terraform/.terraform*
 managedapp/app.zip
 ansible/azurecredentials.rc
 ansible/*.retry
+ansibe/.vscode

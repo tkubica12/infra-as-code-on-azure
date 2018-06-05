@@ -3,6 +3,7 @@
       resource_group: "{{ group }}"
       name: "{{ item.name }}"
       vm_size: Standard_B1s
+      managed_disk_type: Premium_LRS
       admin_username: tomas
       ssh_password_enabled: false
       ssh_public_keys: 
@@ -12,7 +13,7 @@
       image:
         offer: UbuntuServer
         publisher: Canonical
-        sku: "16.04-LTS"
+        sku: "14.04-LTS"
         version: latest
       open_ports:
         - 22

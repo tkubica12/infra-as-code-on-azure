@@ -15,7 +15,7 @@
 
 - name: Make sure Apache is installed
   hosts: apache
-  gather_facts: no
+  gather_facts: yes
   remote_user: tomas
   become: true
   roles:
@@ -23,7 +23,7 @@
 
 - name: Make sure nginx is installed
   hosts: nginx
-  gather_facts: no
+  gather_facts: yes
   remote_user: tomas
   become: true
   roles:
