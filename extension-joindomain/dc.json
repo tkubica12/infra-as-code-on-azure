@@ -161,6 +161,9 @@
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "apiVersion": "2016-03-30",
         "location": "[variables('location')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Compute/virtualMachines/', variables('dcVmName'))]"
+        ],
         "properties": {
           "publisher": "Microsoft.Powershell",
           "type": "DSC",

@@ -1,38 +1,40 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-      "ipName": {
-          "type": "string",
-          "metadata": {
-              "description": "IP address name"
-          }
-      },
-      "environment": {
-          "type": "string",
-          "defaultValue": "PROD",
-          "allowedValues": [
-              "PROD", "QA", "TEST", "DEV"
-          ],
-          "metadata": {
-              "description": "Environment in which IP address will be used"
-          }
-      }
-   },
-  "variables": {
-      "location": "[resourceGroup().location]"
-   },
-  "resources": 
-  [
-            {
-                "type": "Microsoft.Network/publicIPAddresses",
-                "name": "[concat(parameters('ipName'),'-',parameters('environment'))]",
-                "apiVersion": "2016-03-30",
-                "location": "[variables('location')]",
-                "properties": {
-                    "publicIPAllocationMethod": "Dynamic"
-                }
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ipName": {
+            "type": "string",
+            "metadata": {
+                "description": "IP address name"
             }
-   ],
-  "outputs": { }
+        },
+        "environment": {
+            "type": "string",
+            "defaultValue": "PROD",
+            "allowedValues": [
+                "PROD",
+                "QA",
+                "TEST",
+                "DEV"
+            ],
+            "metadata": {
+                "description": "Environment in which IP address will be used"
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[concat(parameters('ipName'),'-',parameters('environment'))]",
+            "apiVersion": "2016-03-30",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        }
+    ],
+    "outputs": {}
 }

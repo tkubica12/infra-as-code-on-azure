@@ -1,48 +1,47 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {
-      "location": "[resourceGroup().location]",
-      "localGroupIpName": "localGroupIp",
-      "nestedGroupIpNames": [
-          "nestedip1",
-          "nestedip2",
-          "nestedip3"
-      ]
-   },
-  "resources": 
-  [
-    {
-        "type": "Microsoft.Network/publicIPAddresses",
-        "name": "[variables('localGroupIpName')]",
-        "apiVersion": "2016-03-30",
-        "location": "[variables('location')]",
-        "properties": {
-            "publicIPAllocationMethod": "Dynamic"
-        }
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "localGroupIpName": "localGroupIp",
+        "nestedGroupIpNames": [
+            "nestedip1",
+            "nestedip2",
+            "nestedip3"
+        ]
     },
-    {
-        "apiVersion": "2017-05-10",
-        "name": "[concat('nestedTemplate', variables('nestedGroupIpNames')[copyIndex()])]",
-        "type": "Microsoft.Resources/deployments",
-        "copy": {
-            "name": "multipleIPs",
-            "count": "[length(variables('nestedGroupIpNames'))]"
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('localGroupIpName')]",
+            "apiVersion": "2016-03-30",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
         },
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri":"https://mujrepozitarsablon.blob.core.windows.net/templates/linked.json",
-            "contentVersion":"1.0.0.0"
-          },
-          "parameters": {
-             "ipName":{
-                 "value": "[variables('nestedGroupIpNames')[copyIndex()]]"
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat('nestedTemplate', variables('nestedGroupIpNames')[copyIndex()])]",
+            "type": "Microsoft.Resources/deployments",
+            "copy": {
+                "name": "multipleIPs",
+                "count": "[length(variables('nestedGroupIpNames'))]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://mujrepozitarsablon.blob.core.windows.net/templates/linked.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ipName": {
+                        "value": "[variables('nestedGroupIpNames')[copyIndex()]]"
+                    }
                 }
-          }
+            }
         }
-      }
-   ],
-  "outputs": { }
+    ],
+    "outputs": {}
 }

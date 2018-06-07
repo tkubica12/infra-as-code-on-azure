@@ -1,39 +1,38 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-      "ipNamePrefix": {
-          "type": "string",
-          "metadata": {
-              "description": "IP address name prefix"
-          }
-      },
-      "count": {
-          "type": "int",
-          "defaultValue": 1,
-          "metadata": {
-              "description": "Number of IP addresses"
-          }
-      }
-   },
-  "variables": {
-      "location": "[resourceGroup().location]"
-   },
-  "resources": 
-  [
-            {
-                "type": "Microsoft.Network/publicIPAddresses",
-                "copy": {
-                    "name": "multipleIPs",
-                    "count": "[parameters('count')]"
-                },
-                "name": "[concat(parameters('ipNamePrefix'),'-', copyIndex(1))]",
-                "apiVersion": "2016-03-30",
-                "location": "[variables('location')]",
-                "properties": {
-                    "publicIPAllocationMethod": "Dynamic"
-                }
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ipNamePrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "IP address name prefix"
             }
-   ],
-  "outputs": { }
+        },
+        "count": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of IP addresses"
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "copy": {
+                "name": "multipleIPs",
+                "count": "[parameters('count')]"
+            },
+            "name": "[concat(parameters('ipNamePrefix'),'-', copyIndex(1))]",
+            "apiVersion": "2016-03-30",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        }
+    ],
+    "outputs": {}
 }

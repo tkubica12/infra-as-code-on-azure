@@ -24,6 +24,10 @@ Using ARM templates to deploy infrastructure for SaaS solution where each custom
 
 Template creates multiple frontend VMs with public IP load balancer and multiple backend VMs with private IP load balancer. Number of VMs in each tier is specified as parameter. Follow instructions in deploy.ps1.
 
+# Storing secrets in Azure Key Vault and use with ARM deployment and Managed Service Identity in VMs or App Services (secrets-keyvault)
+
+In this demo we demonstrate how to remove secrets (passwords, keys, certificates) from deployment processes or configuration files. We will create key Vault and store our secret there. We than reference this secret during ARM deployment to set password for Azure Database dor MySQL. Then we will use managed Services Identity with VM and demonstrate how application can use MSI account to pickup database password from Key Vault.
+
 # Terraform as multi-cloud infrastructure deployment solution (terraform)
 
 Terraform is open-source cross-platform multi-cloud declarative tool to deploy infrastructure. It is similar to native ARM, but supports other clouds and on-premises platforms. This example shows complex terraform infrastructure with reusable modules. main.tf contains main declarative state infrastructure with some inputs. Modules are used to create reusable infrastructure as code and setup production and test environment. Shared services module creates network. Web module creates couple of VMs and load balancer. App module creates container registry and managed Kubernetes cluster. Database module prepares Azure SQL DB. Follow instructions in deploy.sh.
@@ -46,7 +50,7 @@ In this demo you will se usage of standard cloud-init to configure Linux system 
 
 # Deploy infrastructure and configure Linux VMs with Ansible roles (ansible)
 
-TBD
+In this demo we will use Ansible as single tool to create infrastructure in Azure as well as configure Linux VMs.
 
 # Leverage Low-priority VMs to lower your cost of batch operations (batch-transcoding)
 
@@ -61,10 +65,6 @@ In this demo we are going to publish ARM template to service catalog (internal t
 TBD
 
 # Reading Azure metadata from VM and reacting on it in your code
-
-TBD
-
-# Managed Service Identity
 
 TBD
 
