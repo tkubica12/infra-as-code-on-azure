@@ -1,0 +1,91 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "batchAccountName": {
+            "defaultValue": "mujbatch1",
+            "type": "string"
+        },
+        "storageAccountName": {
+            "defaultValue": "mojebatchstorage1",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "batchPoolName": "mypool",
+        "location": "[resourceGroup().location]",
+        "batchStorageId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccountName')]",
+            "apiVersion": "2017-10-01",
+            "location": "[variables('location')]"
+        },
+        {
+            "type": "Microsoft.Batch/batchAccounts",
+            "name": "[parameters('batchAccountName')]",
+            "apiVersion": "2017-09-01",
+            "dependsOn": [
+                "[variables('batchStorageId')]"
+            ],
+            "location": "[variables('location')]",
+            "properties": {
+                "autoStorage": {
+                    "storageAccountId": "[variables('batchStorageId')]"
+                },
+                "poolAllocationMode": "BatchService"
+            }
+        },
+        {
+            "type": "Microsoft.Batch/batchAccounts/pools",
+            "name": "[concat(parameters('batchAccountName'), '/', variables('batchPoolName'))]",
+            "apiVersion": "2017-09-01",
+            "properties": {
+                "vmSize": "STANDARD_A1",
+                "interNodeCommunication": "Disabled",
+                "maxTasksPerNode": 1,
+                "taskSchedulingPolicy": {
+                    "nodeFillType": "Spread"
+                },
+                "deploymentConfiguration": {
+                    "virtualMachineConfiguration": {
+                        "imageReference": {
+                            "publisher": "Canonical",
+                            "offer": "UbuntuServer",
+                            "sku": "16.04-LTS",
+                            "version": "latest"
+                        },
+                        "nodeAgentSkuId": "batch.node.ubuntu 16.04"
+                    }
+                },
+                "scaleSettings": {
+                    "autoScale": {
+                        "formula": "startingNumberOfVMs = 0;\nmaxNumberofVMs = 20;\npendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);\npendingTaskSamples = pendingTaskSamplePercent < 70 ? startingNumberOfVMs : avg($PendingTasks.GetSample(180 * TimeInterval_Second));\n$TargetDedicatedNodes=min(maxNumberofVMs, pendingTaskSamples);",
+                        "evaluationInterval": "PT5M"
+                    }
+                },
+                "startTask": {
+                    "commandLine": "/bin/bash -c \"apt-get update && apt-get install -y ffmpeg\"\n",
+                    "userIdentity": {
+                        "autoUser": {
+                            "scope": "Pool",
+                            "elevationLevel": "Admin"
+                        }
+                    },
+                    "maxTaskRetryCount": 0,
+                    "waitForSuccess": true
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Batch/batchAccounts', parameters('batchAccountName'))]"
+            ]
+        }
+    ]
+}
