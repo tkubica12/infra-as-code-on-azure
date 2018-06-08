@@ -26,7 +26,7 @@ Template creates multiple frontend VMs with public IP load balancer and multiple
 
 # Storing secrets in Azure Key Vault and use with ARM deployment and Managed Service Identity in VMs or App Services (secrets-keyvault)
 
-In this demo we demonstrate how to remove secrets (passwords, keys, certificates) from deployment processes or configuration files. We will create key Vault and store our secret there. We than reference this secret during ARM deployment to set password for Azure Database dor MySQL. Then we will use managed Services Identity with VM and demonstrate how application can use MSI account to pickup database password from Key Vault.
+In this demo we demonstrate how to remove secrets (passwords, keys, certificates) from deployment processes or configuration files. We will create Key Vault and store our secret there. We than reference this secret during ARM deployment to set password for Azure Database for MySQL. Then we will use Managed Services Identity with VM and demonstrate how application can use MSI account to pickup database password from Key Vault.
 
 # Terraform as multi-cloud infrastructure deployment solution (terraform)
 
@@ -50,11 +50,11 @@ In this demo you will se usage of standard cloud-init to configure Linux system 
 
 # Deploy infrastructure and configure Linux VMs with Ansible roles (ansible)
 
-In this demo we will use Ansible as single tool to create infrastructure in Azure as well as configure Linux VMs.
+In this demo we will use Ansible as single tool to create infrastructure in Azure as well as configure Linux VMs for Apache or NGINX.
 
 # Leverage Low-priority VMs to lower your cost of batch operations (batch-transcoding)
 
-TBD
+Azure Batch is orchestration platform to create VM resources, install basic environments and application and schedule batch long-running tasks such as video transcoding, rendering or ML training jobs. It can automatically scale cluster (number of VMs) based on task queue lenght. Azure Batch support Low Priority VMs (machines with no guarantees leveraging spare resource) with significant discounts. In our demo we will use Azure Batch to transcode video files in Blob storage. For purpose of demo standard VMs are used, but you can easily change it to Low Priority SKUs.
 
 # Prepare Managed Application and publish it to your internal app catalog in Azure (managedapp)
 
