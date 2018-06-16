@@ -50,7 +50,7 @@ In this demo you will se usage of standard cloud-init to configure Linux system 
 
 # Deploy infrastructure and configure Linux VMs with Ansible roles (ansible)
 
-In this demo we will use Ansible as single tool to create infrastructure in Azure as well as configure Linux VMs for Apache or NGINX.
+In this demo we will use Ansible as single tool to create infrastructure in Azure as well as configure Linux VMs for Apache or NGINX. You can use jump server from previous demo (cloud-init). We will also demonstrate dynamic inventory plugin for Azure so you can use other methods to deply infrastructure (such as ARM or Terraform) and continue with Ansible to deploy services to VMs.
 
 # Leverage Low-priority VMs to lower your cost of batch operations (batch-transcoding)
 

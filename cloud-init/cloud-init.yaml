@@ -137,6 +137,7 @@ packages:
   - chromium-browser
   - unzip
   - python-pip
+  - jq
 
 runcmd:
   - runuser -l tomas -c 'code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools'
@@ -175,5 +176,6 @@ runcmd:
   - runuser -l tomas -c 'cd /home/tomas && git clone https://github.com/tkubica12/infra-as-code-on-azure.git'
   - sed -i.bak '/fi/a \#xrdp multiple users configuration \n mate-session \n' /etc/xrdp/startwm.sh
   - systemctl start xrdp
+
 
 
