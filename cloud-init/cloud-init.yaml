@@ -135,6 +135,7 @@ packages:
   - code
   - wget
   - chromium-browser
+  - unzip
 
 runcmd:
   - runuser -l tomas -c 'code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools'
@@ -142,6 +143,9 @@ runcmd:
   - runuser -l tomas -c 'code --install-extension ms-vscode.azure-account'
   - runuser -l tomas -c 'code --install-extension ms-vscode.azurecli'
   - runuser -l tomas -c 'code --install-extension PeterJausovec.vscode-docker'
+  - runuser -l tomas -c 'code --install-extension vscoss.vscode-ansible'
+  - runuser -l tomas -c 'code --install-extension mauve.terraform'
+  - runuser -l tomas -c 'code --install-extension ms-azuretools.vscode-azureterraform'
   - wget https://storage.googleapis.com/kubernetes-helm/helm-v2.8.2-linux-amd64.tar.gz
   - tar xvf helm-v2.8.2-linux-amd64.tar.gz --strip-components 1 -C /usr/local/bin/ linux-amd64/helm 
   - chmod 755 /usr/local/bin/helm
@@ -158,6 +162,11 @@ runcmd:
   - mv svcat /usr/local/bin/svcat
   - chmod 755 /usr/local/bin/svcat
   - usermod -a -G docker tomas
+  - wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
+  - unzip terraform_0.11.7_linux_amd64.zip
+  - mv ./terraform /usr/local/bin
+  - chmod 755 /usr/local/bin/terraform
+  - pip install ansible[azure]
   - sed -i 's/BIG-REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1
   - sed -i 's/BIG-REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
   - runuser -l tomas -c 'cd /home/tomas && git clone https://github.com/tkubica12/aks-mensi-demo.git'

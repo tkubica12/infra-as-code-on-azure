@@ -1,4 +1,4 @@
-export $resourceGroup=cloudinitdemo
+export resourceGroup=cloudinitdemo
 az group create -n $resourceGroup -l westeurope
 az vm create -n jumpserver -g $resourceGroup \
     --admin-username tomas \
