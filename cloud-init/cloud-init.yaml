@@ -136,6 +136,7 @@ packages:
   - wget
   - chromium-browser
   - unzip
+  - python-pip
 
 runcmd:
   - runuser -l tomas -c 'code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools'
