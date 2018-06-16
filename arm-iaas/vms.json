@@ -286,6 +286,9 @@
             "name": "[variables('frontendLbName')]",
             "type": "Microsoft.Network/loadBalancers",
             "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('frontendPublicIpName'))]"
+            ],
             "properties": {
                 "frontendIPConfigurations": [
                     {

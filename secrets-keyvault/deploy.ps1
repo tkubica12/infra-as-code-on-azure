@@ -38,7 +38,6 @@ export token=$(curl -s "http://169.254.169.254/metadata/identity/oauth2/token?ap
     | jq -r .access_token)
 
 # Use this token to retrieve password from Key Vault
-
 curl -s https://my-keyvault-123.vault.azure.net/secrets/moje-heslo?api-version=2016-10-01 -H "Authorization: Bearer $token"
 
 sudo apt install mysql-client -y
