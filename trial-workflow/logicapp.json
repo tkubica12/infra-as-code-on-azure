@@ -1,0 +1,315 @@
+{
+    "$connections": {
+        "value": {
+            "arm": {
+                "connectionId": "/subscriptions/a0f4a733-4fce-4d49-b8a8-d30541fc1b45/resourceGroups/poc/providers/Microsoft.Web/connections/arm",
+                "connectionName": "arm",
+                "id": "/subscriptions/a0f4a733-4fce-4d49-b8a8-d30541fc1b45/providers/Microsoft.Web/locations/westeurope/managedApis/arm"
+            },
+            "office365": {
+                "connectionId": "/subscriptions/a0f4a733-4fce-4d49-b8a8-d30541fc1b45/resourceGroups/poc/providers/Microsoft.Web/connections/office365",
+                "connectionName": "office365",
+                "id": "/subscriptions/a0f4a733-4fce-4d49-b8a8-d30541fc1b45/providers/Microsoft.Web/locations/westeurope/managedApis/office365"
+            }
+        }
+    },
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Create_or_update_a_resource_group": {
+                "inputs": {
+                    "body": {
+                        "location": "westeurope"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['arm']['connectionId']"
+                        }
+                    },
+                    "method": "put",
+                    "path": "/subscriptions/@{encodeURIComponent('a0f4a733-4fce-4d49-b8a8-d30541fc1b45')}/resourcegroups/@{encodeURIComponent(triggerBody()?['customerLogin'])}",
+                    "queries": {
+                        "x-ms-api-version": "2016-06-01"
+                    }
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            },
+            "Create_or_update_a_template_deployment": {
+                "inputs": {
+                    "body": {
+                        "properties": {
+                            "mode": "Incremental",
+                            "template": {
+                                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "outputs": {
+                                    "siteFQDN": {
+                                        "type": "string",
+                                        "value": "[concat('http://', reference(resourceId('Microsoft.ContainerInstance/containerGroups/', variables('wordpresscontainerGroupName'))).ipAddress.fqdn)]"
+                                    }
+                                },
+                                "parameters": {
+                                    "location": {
+                                        "defaultValue": "[resourceGroup().location]",
+                                        "metadata": {
+                                            "description": "Location for all resources."
+                                        },
+                                        "type": "string"
+                                    },
+                                    "mysqlPassword": {
+                                        "defaultValue": "Azure12345678",
+                                        "metadata": {
+                                            "description": "MySQL database password"
+                                        },
+                                        "type": "securestring"
+                                    },
+                                    "siteName": {
+                                        "defaultValue": "[uniquestring(resourceGroup().id)]",
+                                        "metadata": {
+                                            "description": "WordPress Site Name"
+                                        },
+                                        "type": "string"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "apiVersion": "2018-02-01-preview",
+                                        "location": "[parameters('location')]",
+                                        "name": "[variables('wordpresscontainerGroupName')]",
+                                        "properties": {
+                                            "containers": [
+                                                {
+                                                    "name": "wordpress",
+                                                    "properties": {
+                                                        "environmentVariables": [
+                                                            {
+                                                                "name": "WORDPRESS_DB_HOST",
+                                                                "value": "127.0.0.1:3306"
+                                                            },
+                                                            {
+                                                                "name": "WORDPRESS_DB_PASSWORD",
+                                                                "value": "[parameters('mysqlPassword')]"
+                                                            }
+                                                        ],
+                                                        "image": "wordpress:4.9-apache",
+                                                        "ports": [
+                                                            {
+                                                                "port": 80,
+                                                                "protocol": "tcp"
+                                                            }
+                                                        ],
+                                                        "resources": {
+                                                            "requests": {
+                                                                "cpu": "[variables('cpuCores')]",
+                                                                "memoryInGb": "[variables('memoryInGb')]"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "mysql",
+                                                    "properties": {
+                                                        "environmentVariables": [
+                                                            {
+                                                                "name": "MYSQL_ROOT_PASSWORD",
+                                                                "value": "[parameters('mysqlPassword')]"
+                                                            }
+                                                        ],
+                                                        "image": "mysql:5.6",
+                                                        "ports": [
+                                                            {
+                                                                "port": 3306,
+                                                                "protocol": "tcp"
+                                                            }
+                                                        ],
+                                                        "resources": {
+                                                            "requests": {
+                                                                "cpu": "[variables('cpuCores')]",
+                                                                "memoryInGb": "[variables('memoryInGb')]"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "ipAddress": {
+                                                "dnsNameLabel": "[parameters('siteName')]",
+                                                "ports": [
+                                                    {
+                                                        "port": 80,
+                                                        "protocol": "tcp"
+                                                    }
+                                                ],
+                                                "type": "Public"
+                                            },
+                                            "osType": "Linux"
+                                        },
+                                        "type": "Microsoft.ContainerInstance/containerGroups"
+                                    }
+                                ],
+                                "variables": {
+                                    "cpuCores": "0.5",
+                                    "memoryInGb": "0.7",
+                                    "wordpressContainerGroupName": "wordpress-containerinstance"
+                                }
+                            }
+                        }
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['arm']['connectionId']"
+                        }
+                    },
+                    "method": "put",
+                    "path": "/subscriptions/@{encodeURIComponent('a0f4a733-4fce-4d49-b8a8-d30541fc1b45')}/resourcegroups/@{encodeURIComponent(body('Create_or_update_a_resource_group')?['name'])}/providers/Microsoft.Resources/deployments/@{encodeURIComponent(body('Create_or_update_a_resource_group')?['name'])}",
+                    "queries": {
+                        "wait": true,
+                        "x-ms-api-version": "2016-06-01"
+                    }
+                },
+                "runAfter": {
+                    "Create_or_update_a_resource_group": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Delay_-_evaluation_period": {
+                "inputs": {
+                    "interval": {
+                        "count": 2,
+                        "unit": "Minute"
+                    }
+                },
+                "runAfter": {
+                    "Send_an_email": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Wait"
+            },
+            "Delete_a_resource_group": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['arm']['connectionId']"
+                        }
+                    },
+                    "method": "delete",
+                    "path": "/subscriptions/@{encodeURIComponent('a0f4a733-4fce-4d49-b8a8-d30541fc1b45')}/resourcegroups/@{encodeURIComponent(triggerBody()?['customerLogin'])}",
+                    "queries": {
+                        "x-ms-api-version": "2016-06-01"
+                    }
+                },
+                "runAfter": {
+                    "Send_an_email_2_-_evaluation_end": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Parse_JSON": {
+                "inputs": {
+                    "content": "@body('Create_or_update_a_template_deployment')?['properties']?['outputs']",
+                    "schema": {
+                        "properties": {
+                            "siteFQDN": {
+                                "properties": {
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "value": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "runAfter": {
+                    "Create_or_update_a_template_deployment": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ParseJson"
+            },
+            "Send_an_email": {
+                "inputs": {
+                    "body": {
+                        "Body": "Hello @{triggerBody()?['customerName']},\n\nThanks for giving our app a try!\nYou instance is ready, please connect here: @{body('Parse_JSON')?['siteFQDN']?['value']}",
+                        "Subject": "Your WordPress demo environment is ready",
+                        "To": "@triggerBody()?['email']"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/Mail"
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Send_an_email_2_-_evaluation_end": {
+                "inputs": {
+                    "body": {
+                        "Body": "Thanks for trying WordPress!",
+                        "Subject": "Your WordPress evaluation expired",
+                        "To": "@triggerBody()?['email']"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/Mail"
+                },
+                "runAfter": {
+                    "Delay_-_evaluation_period": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "method": "POST",
+                    "schema": {
+                        "properties": {
+                            "customerLogin": {
+                                "type": "string"
+                            },
+                            "customerName": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    }
+}

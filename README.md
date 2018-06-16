@@ -62,7 +62,7 @@ In this demo we are going to publish ARM template to service catalog (internal t
 
 # Trial workflow for your SaaS app using ARM, containers and Logic Apps (trial-workflow)
 
-TBD
+In this demo we will leverage packaging application to containers, run it quickly in Azure Container Instance and leverage Logic Apps to model worflow around it for trial scenarios. Our SaaS app will be Wordpress consisting of app container and db container. Our workflow will start on http request trigger (eg. when customer fill in form on company web site to get trial deployment). We will create resource group and use ARM to deploy app into ACI. Then we gather public IP and send login details to customer via email. Trial period is then started. After trial period is over we send email to customer and delete environment.
 
 # Reading Azure metadata from VM and reacting on it in your code
 
