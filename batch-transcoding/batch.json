@@ -67,7 +67,7 @@
                 },
                 "scaleSettings": {
                     "autoScale": {
-                        "formula": "startingNumberOfVMs = 0;\nmaxNumberofVMs = 20;\npendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);\npendingTaskSamples = pendingTaskSamplePercent < 70 ? startingNumberOfVMs : avg($PendingTasks.GetSample(180 * TimeInterval_Second));\n$TargetDedicatedNodes=min(maxNumberofVMs, pendingTaskSamples);",
+                        "formula": "startingNumberOfVMs = 0;\nmaxNumberofVMs = 15;\npendingTaskSamplePercent = $PendingTasks.GetSamplePercent(180 * TimeInterval_Second);\npendingTaskSamples = pendingTaskSamplePercent < 70 ? startingNumberOfVMs : avg($PendingTasks.GetSample(180 * TimeInterval_Second));\n$TargetDedicatedNodes=min(maxNumberofVMs, pendingTaskSamples);",
                         "evaluationInterval": "PT5M"
                     }
                 },
