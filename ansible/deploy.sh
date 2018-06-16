@@ -1,3 +1,7 @@
+# Option 1: Ansible is pre-installed and pre-authenticated in Azure Cloud Shell
+
+# Option 2: Use jump server we have created before (cloud-init)
+
 # Install NGINX and Apache roles from repo
 ansible-galaxy install geerlingguy.apache
 ansible-galaxy install geerlingguy.nginx
@@ -17,3 +21,6 @@ chmod +x azure_rm.py
 ./azure_rm.py | jq
 
 ansible -i azure_rm.py ansiblegroup_nginx -m ping
+
+# Destroy environment
+az group delete -y --no-wait -n ansible-rg

@@ -47,6 +47,7 @@ resource "azurerm_kubernetes_cluster" "app" {
   name                = "appkubernetes"
   location            = "${azurerm_resource_group.app.location}"
   resource_group_name = "${azurerm_resource_group.app.name}"
+  dns_prefix          = "appkube${random_id.registry.hex}"
 
   linux_profile {
     admin_username = "myadmin"
