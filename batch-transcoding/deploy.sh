@@ -15,7 +15,7 @@ export AZURE_STORAGE_ACCESS_KEY=$(az storage account keys list -n $storageAccoun
 
 # Create storage account, contaners and upload videos
 az storage container create -n inputs
-export inputsas=$(az storage container generate-sas -n outputs \
+export inputsas=$(az storage container generate-sas -n inputs \
     --start 2018-01-01 \
     --expiry 2020-01-01 \
     --permissions r \
@@ -65,3 +65,6 @@ for i in {0..20}
         az batch task create --job-id job --json-file task.json
         rm task.json
     done
+
+# Destroy resource group
+az group delete -n $resourceGroup -y --no-wait
