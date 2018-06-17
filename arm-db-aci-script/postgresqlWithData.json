@@ -1,0 +1,138 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "cpuCores": "1",
+    "memoryInGb": "1.5",
+    "postgresqlServerName": "[concat('postgresql-', uniquestring(resourceGroup().id))]",
+    "postgresqlVersion": "9.6",
+    "postgresqlLogin": "tomas",
+    "postgresqlPassword": "Azure12345678",
+    "postgresqlStorage": 5120,
+    "postgresqlBackupRetentionDays": 7,
+    "postgresqlGeoBackup": "Disabled",
+    "postgresqlSkuName": "B_Gen5_1",
+    "postgresqlSkuTier": "Basic",
+    "postgresqlSkuCapacity": 1,
+    "postgresqlSkuFamily": "Gen5",
+    "dbConnectionHost": "[concat(variables('postgresqlServerName'), '.postgres.database.azure.com')]",
+    "dbConnectionUser": "[concat(variables('postgresqlLogin'), '@', variables('postgresqlServerName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-12-01-preview",
+      "kind": "",
+      "location": "[parameters('location')]",
+      "name": "[variables('postgresqlServerName')]",
+      "properties": {
+          "version": "[variables('postgresqlVersion')]",
+          "administratorLogin": "[variables('postgresqlLogin')]",
+          "administratorLoginPassword": "[variables('postgresqlPassword')]",
+          "storageProfile": {
+              "storageMB": "[variables('postgresqlStorage')]",
+              "backupRetentionDays": "[variables('postgresqlBackupRetentionDays')]",
+              "geoRedundantBackup": "[variables('postgresqlGeoBackup')]"
+          },
+          "sslEnforcement": "Disabled"
+      },
+      "sku": {
+          "name": "[variables('postgresqlSkuName')]",
+          "tier": "[variables('postgresqlSkuTier')]",
+          "capacity": "[variables('postgresqlSkuCapacity')]",
+          "size": "[variables('postgresqlStorage')]",
+          "family": "[variables('postgresqlSkuFamily')]"
+      },
+      "type": "Microsoft.DBforPostgreSQL/servers",
+      "resources":[
+        {
+          "type":"firewallrules",
+          "apiVersion":"2017-12-01-preview",
+          "dependsOn":[
+            "[concat('Microsoft.DBforPostgreSQL/servers/', variables('postgresqlServerName'))]"
+          ],
+          "location":"[parameters('location')]",
+          "name":"allowAll",
+          "properties":{
+            "startIpAddress":"0.0.0.0",
+            "endIpAddress":"255.255.255.255"
+          }
+        }]
+    },
+    {
+      "name": "psql-script",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2018-02-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[variables('postgresqlServerName')]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "psql-script",
+            "properties": {
+              "image": "tutum/curl",
+              "ports": [
+                {
+                  "protocol": "tcp",
+                  "port": 80
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "PGPASSWORD",
+                  "value": "[variables('postgresqlPassword')]"
+                },
+                {
+                  "name": "PGUSER",
+                  "value": "[variables('dbConnectionUser')]"
+                },
+                {
+                  "name": "PGHOST",
+                  "value": "[variables('dbConnectionHost')]"
+                },
+                {
+                  "name": "PGSSLMODE",
+                  "value": "require"
+                }
+              ],
+              "command": [
+                "/bin/bash",
+                "-c",
+                "apt-get update && apt-get install wget postgresql-client -y && wget 'https://tomuvstore.blob.core.windows.net/sdilna/world.sql?st=2018-05-22T05%3A59%3A00Z&se=2020-05-24T05%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=1Uh7nH6KfO8sPW9qLpWKpevLrqCkaR%2FBxt7mcF56oqk%3D' -O world.sql && psql -d postgres -c 'CREATE DATABASE mydata;' && psql -d mydata -f world.sql"
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": "[variables('cpuCores')]",
+                  "memoryInGb": "[variables('memoryInGb')]"
+                }
+              }
+            }
+          }
+        ],
+        "ipAddress": {
+          "ports": [
+            {
+              "protocol": "tcp",
+              "port": 80
+            }
+          ],
+          "type": "Public"
+        },
+        "restartPolicy": "OnFailure",
+        "osType": "Linux"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

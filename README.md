@@ -52,6 +52,10 @@ In this demo you will se usage of standard cloud-init to configure Linux system 
 
 In this demo we will use Ansible as single tool to create infrastructure in Azure as well as configure Linux VMs for Apache or NGINX. You can use jump server from previous demo (cloud-init). We will also demonstrate dynamic inventory plugin for Azure so you can use other methods to deply infrastructure (such as ARM or Terraform) and continue with Ansible to deploy services to VMs.
 
+# Using ACI as scripting node for PaaS services in ARM (arm-db-aci-script)
+
+When deploying database into VM for your CI/CD purposes you can use tools like script extension ro Ansible to load testing data. This is not available for PaaS databases. You may script data load from your CI/CD system, which is OK for internal situation, but not ideal when building for example ARM template for trial or self deployment. In this demo we use ACI container to run one-shot script to move data.
+
 # Leverage Low-priority VMs to lower your cost of batch operations (batch-transcoding)
 
 Azure Batch is orchestration platform to create VM resources, install basic environments and application and schedule batch long-running tasks such as video transcoding, rendering or ML training jobs. It can automatically scale cluster (number of VMs) based on task queue lenght. Azure Batch support Low Priority VMs (machines with no guarantees leveraging spare resource) with significant discounts. In our demo we will use Azure Batch to transcode video files in Blob storage. For purpose of demo standard VMs are used, but you can easily change it to Low Priority SKUs.
