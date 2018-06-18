@@ -28,6 +28,10 @@ Using ARM templates to deploy infrastructure for SaaS solution where each custom
 
 Template creates multiple frontend VMs with public IP load balancer and multiple backend VMs with private IP load balancer. Number of VMs in each tier is specified as parameter. Follow instructions in deploy.ps1.
 
+# Reading Azure metadata from VM and reacting on it in your code (metadata-service)
+
+In this demo we will leverage VMs deployed in IaaS example to demonstrate metadata service. Azure provides internal non-routable endpoint where your application can gather information. You can get details about your VM that you can use to configure your app - region, fail domain. For example you can use this data to configure distributed applications and clusters such as Cassandra. Also you get information about scheduled events such as planned maintenance so you can drain your app (finish sessions, persist data etc.). See metadata.sh for details.
+
 # Storing secrets in Azure Key Vault and use with ARM deployment and Managed Service Identity in VMs or App Services (secrets-keyvault)
 
 In this demo we demonstrate how to remove secrets (passwords, keys, certificates) from deployment processes or configuration files. We will create Key Vault and store our secret there. We than reference this secret during ARM deployment to set password for Azure Database for MySQL. Then we will use Managed Services Identity with VM and demonstrate how application can use MSI account to pickup database password from Key Vault.
@@ -72,9 +76,7 @@ In this demo we are going to publish ARM template to service catalog (internal t
 
 In this demo we will leverage packaging application to containers, run it quickly in Azure Container Instance and leverage Logic Apps to model worflow around it for trial scenarios. Our SaaS app will be Wordpress consisting of app container and db container. Our workflow will start on http request trigger (eg. when customer fill in form on company web site to get trial deployment). We will create resource group and use ARM to deploy app into ACI. Then we gather public IP and send login details to customer via email. Trial period is then started. After trial period is over we send email to customer and delete environment.
 
-# Reading Azure metadata from VM and reacting on it in your code
 
-TBD
 
 
 

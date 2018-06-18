@@ -86,9 +86,9 @@
         "storageAccountName": "[concat('diag', uniquestring(resourceGroup().id))]",
         "frontendSubnetId": "[resourceId(resourceGroup().Name, 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('frontendSubnetName'))]",
         "backendSubnetId": "[resourceId(resourceGroup().Name, 'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('backendSubnetName'))]",
-        "imagePublisher": "OpenLogic",
-        "imageOffer": "CentOS",
-        "imageSku": "7.3",
+        "imagePublisher": "Canonical",
+        "imageOffer": "UbuntuServer",
+        "imageSku": "16.04-LTS",
         "frontendVmName": "[concat(parameters('frontendNamePrefix'), '-vm-')]",
         "frontendNicName": "[concat(parameters('frontendNamePrefix'), '-nic-')]",
         "frontendAsName": "[concat(parameters('frontendNamePrefix'), '-as')]",
@@ -96,6 +96,7 @@
         "frontendLbName": "[concat(parameters('frontendNamePrefix'), '-elb')]",
         "frontendPublicIpName": "[concat(parameters('frontendNamePrefix'), '-ip')]",
         "frontendLbPort": 80,
+        "frontendSshNatBase": 9000,
         "backendVmName": "[concat(parameters('backendNamePrefix'), '-vm-')]",
         "backendNicName": "[concat(parameters('backendNamePrefix'), '-nic-')]",
         "backendAsName": "[concat(parameters('backendNamePrefix'), '-as')]",
@@ -339,6 +340,28 @@
             }
         },
         {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+            "name": "[concat(variables('frontendLbName'), '/', 'SSH', copyIndex())]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+              "name": "lbNatLoop",
+              "count": "[parameters('frontendCount')]"
+            },
+            "dependsOn": [
+              "[concat('Microsoft.Network/loadBalancers/', variables('frontendLbName'))]"
+            ],
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers/', variables('frontendLbName')), '/frontendIPConfigurations/loadBalancerFrontEnd')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": "[copyIndex(variables('frontendSshNatBase'))]",
+              "backendPort": 22,
+              "enableFloatingIP": false
+            }
+          },
+        {
             "type": "Microsoft.Compute/availabilitySets",
             "name": "[variables('frontendAsName')]",
             "apiVersion": "2016-04-30-preview",
@@ -358,7 +381,8 @@
                 "count": "[parameters('frontendCount')]"
             },
             "dependsOn": [
-                "[concat('Microsoft.Network/loadBalancers/', variables('frontendLbName'))]"
+                "[concat('Microsoft.Network/loadBalancers/', variables('frontendLbName'))]",
+                "[concat('Microsoft.Network/loadBalancers/', variables('frontendLbName'), '/inboundNatRules/', 'SSH', copyIndex())]"
             ],
             "location": "[parameters('location')]",
             "properties": {
@@ -374,7 +398,12 @@
                                 {
                                     "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('frontendLbName')),'/backendAddressPools/loadBalancerBackEnd')]"
                                 }
-                            ]
+                            ],
+                            "loadBalancerInboundNatRules": [
+                                {
+                                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('frontendLbName')),'/inboundNatRules/SSH', copyindex())]"
+                                }
+                              ]
                         }
                     }
                 ]
