@@ -4,7 +4,7 @@ This repository contains various demos presented on DevOps Bootcamp Praha 2018 b
 
 Each example contains deploy.ps1 or deploy.sh with instructions how to deploy that demo.
 
-Presentation from event (in Czech) is available [here](Infrastructure as Code.pdf)
+Presentation from event (in Czech) is available [here](Infrastructure-as-Code.pdf)
 
 # ARM basics (arm-language)
 
