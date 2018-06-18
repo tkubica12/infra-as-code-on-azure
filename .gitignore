@@ -8,3 +8,4 @@ ansible/*.retry
 ansible/.vscode
 ansible/.azure_rm.py
 batch-transcoding/task.json
+trial-workflow/deploy.sh
