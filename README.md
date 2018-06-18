@@ -6,6 +6,8 @@ Each example contains deploy.ps1 or deploy.sh with instructions how to deploy th
 
 Presentation from event (in Czech) is available [here](Infrastructure-as-Code.pdf)
 
+Visit my blog (in Czech) about Azure on [https://tomaskubica.cz](https://tomaskubica.cz)
+
 # ARM basics (arm-language)
 
 This demonstrates some basic ARM syntax principles described here:
