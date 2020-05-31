@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        },
+        "identityName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2019-10-01-preview",
+            "name": "getWhitelistIp",
+            "location": "[resourceGroup().location]",
+            "kind": "AzureCLI",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]": {
+                    }
+                }
+            },
+            "properties": {
+                "forceUpdateTag": "[parameters('utcValue')]",
+                "AzCliVersion": "2.0.80",
+                "timeout": "PT10M",
+                "arguments": "mujarg1 mujarg2",
+                "environmentVariables": [
+                    {
+                        "name": "MUJ_ENV",
+                        "value": "mojeHodnota"
+                    }
+                ],
+                "scriptContent": "apk add bind-tools; echo Ahojky, argumenty jsou $1 a $2, MUJ_ENV je $MUJ_ENV; host -4 tomaskubica.cz; ip=$(host -4 tomaskubica.cz | awk '{ print $NF }'); jq -n --arg ip $ip '{ip:$ip}' > $AZ_SCRIPTS_OUTPUT_PATH; cat $AZ_SCRIPTS_OUTPUT_PATH",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+            }
+        }
+    ],
+    "outputs": {
+        "ip": {
+            "value": "[reference('getWhitelistIp').outputs.ip]",
+            "type": "string"
+        }
+    }
+}

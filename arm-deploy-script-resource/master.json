@@ -1,0 +1,103 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
+        }
+    },
+    "variables": {
+        "templatesBaseUrl": "",
+        "storageAccountName": "[uniqueString(resourceGroup().Id)]",
+        "identityName": "[concat('identity-', uniqueString(resourceGroup().Id))]",
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "createScriptIdenitity",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templatesBaseUrl'), 'creatSriptIdentity.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "identityName": {
+                        "value": "[variables('identityName')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "getWhitelistIp",
+            "dependsOn": [
+                "createScriptIdenitity"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templatesBaseUrl'), 'getWhitelistIp.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "identityName": {
+                        "value": "[variables('identityName')]"
+                    },
+                    "utcValue": {
+                        "value": "[parameters('utcValue')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "createStorageAccount",
+            "dependsOn": [
+                "getWhitelistIp"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templatesBaseUrl'), 'createStorageAccount.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "whitelistIp": {
+                        "value": "[reference('getWhitelistIp').outputs.ip.value]"
+                    },
+                    "storageAccountName": {
+                        "value": "[variables('storageAccountName')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "uploadData",
+            "dependsOn": [
+                "createStorageAccount"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templatesBaseUrl'), 'uploadData.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "identityName": {
+                        "value": "[variables('identityName')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[variables('storageAccountName')]"
+                    }
+                }
+            }
+        }
+    ]
+}
