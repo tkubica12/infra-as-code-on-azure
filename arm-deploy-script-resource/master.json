@@ -8,7 +8,7 @@
         }
     },
     "variables": {
-        "templatesBaseUrl": "",
+        "templatesBaseUrl": "https://raw.githubusercontent.com/tkubica12/infra-as-code-on-azure/master/arm-deploy-script-resource/",
         "storageAccountName": "[uniqueString(resourceGroup().Id)]",
         "identityName": "[concat('identity-', uniqueString(resourceGroup().Id))]",
     },
@@ -20,7 +20,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('templatesBaseUrl'), 'creatSriptIdentity.json')]",
+                    "uri": "[concat(variables('templatesBaseUrl'), 'createScriptIdentity.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
