@@ -9,20 +9,12 @@
             "type": "string"
         }
     },
-    "variables": {
-        "location": "[resourceGroup().location]",
-        "storageAccountName": "[uniqueString(resourceGroup().Id)]",
-        "identityName": "[concat('identity-', uniqueString(resourceGroup().Id))]",
-        "contributorRoleId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
-    },
+    "variables": {},
     "resources": [
         {
             "type": "Microsoft.Resources/deploymentScripts",
             "name": "uploadData",
             "apiVersion": "2019-10-01-preview",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'deployStorageTemplate')]"
-            ],
             "location": "[resourceGroup().location]",
             "kind": "AzureCLI",
             "identity": {
